@@ -1,0 +1,53 @@
+# ---------- Dependencies ----------
+node_modules/
+web/node_modules/
+
+# ---------- Build artifacts ----------
+dist/
+web/.next/
+web/out/
+coverage/
+*.tsbuildinfo
+
+# ---------- Secrets & local env ----------
+# .env.example ו-.env.test מקודמים (templates עם placeholders)
+.env
+.env.local
+.env.*.local
+.env.production
+.env.staging
+
+# ---------- Dev-only data (משולב במחשב המקומי בלבד) ----------
+.dev-pg-data/
+.dev-vault/
+.dev-inbox/
+.dev-inbox-done/
+vault/
+
+# ---------- IDE / OS ----------
+.DS_Store
+*.swp
+.vscode/
+.idea/
+.zed/
+
+# ---------- Claude Code workspace ----------
+.claude/
+CLAUDE.md
+
+# ---------- Logs ----------
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ---------- Test outputs ----------
+test-results/
+playwright-report/
+*.lcov
+
+# ---------- Compiled scripts (תוצרי tsc) ----------
+scripts/*.js
+scripts/*.js.map
+scripts/*.d.ts
+!scripts/seed.sql

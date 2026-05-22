@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- קובץ מבנה אחיד לדוגמה — לקוח אחד עם חשבון פנסיוני אחד אצל יצרן MGD.
+     10 רשומות נתונים + Trailer. ת.ז. וח.פ. עוברים ספרת ביקורת. -->
+<MevneAhid standardVersion="2024.1">
+  <Block code="010">
+    <Record>
+      <inquiryNumber>INQ-2024-0001</inquiryNumber>
+      <fileDate>20240520</fileDate>
+      <providerCode>OFNIR</providerCode>
+      <standardVersion>2024.1</standardVersion>
+    </Record>
+  </Block>
+
+  <Block code="020">
+    <Record>
+      <lotId>L1</lotId>
+      <israelId>000000018</israelId>
+      <firstName>ישראל</firstName>
+      <lastName>ישראלי</lastName>
+      <birthDate>19850312</birthDate>
+      <gender>M</gender>
+      <city>תל אביב</city>
+    </Record>
+  </Block>
+
+  <Block code="030">
+    <Record>
+      <lotId>L1</lotId>
+      <manufacturerCode>MGD</manufacturerCode>
+      <manufacturerName>מגדל</manufacturerName>
+    </Record>
+  </Block>
+
+  <Block code="040">
+    <Record>
+      <lotId>L1</lotId>
+      <manufacturerCode>MGD</manufacturerCode>
+      <policyNumber>POL-100</policyNumber>
+      <productCode>PENS-MAKIF</productCode>
+      <openedDate>20150101</openedDate>
+      <accountStatus>AC</accountStatus>
+      <riskTrackCode>GENERAL</riskTrackCode>
+      <managementFeeDeposit>2.0000</managementFeeDeposit>
+      <managementFeeBalance>0.2000</managementFeeBalance>
+    </Record>
+  </Block>
+
+  <Block code="050">
+    <Record>
+      <lotId>L1</lotId>
+      <policyNumber>POL-100</policyNumber>
+      <snapshotDate>20240430</snapshotDate>
+      <severance>120000.00</severance>
+      <tagmulimEmployee>80000.00</tagmulimEmployee>
+      <tagmulimEmployer>95000.00</tagmulimEmployer>
+      <allowance>5000.00</allowance>
+    </Record>
+  </Block>
+
+  <Block code="060">
+    <Record>
+      <lotId>L1</lotId>
+      <policyNumber>POL-100</policyNumber>
+      <coverageTypeCode>DEATH</coverageTypeCode>
+      <insuredAmount>500000.00</insuredAmount>
+      <premium>120.50</premium>
+      <underwritingStatus>OK</underwritingStatus>
+      <coverageFrom>20150101</coverageFrom>
+    </Record>
+  </Block>
+
+  <Block code="070">
+    <Record>
+      <lotId>L1</lotId>
+      <policyNumber>POL-100</policyNumber>
+      <employerCompanyId>000000026</employerCompanyId>
+      <employerName>חברת הייטק בעמ</employerName>
+      <employmentStart>20190101</employmentStart>
+      <depositMonth>202404</depositMonth>
+      <amountEmployee>1500.00</amountEmployee>
+      <amountEmployer>1800.00</amountEmployer>
+      <amountSeverance>2100.00</amountSeverance>
+    </Record>
+  </Block>
+
+  <Block code="080">
+    <Record>
+      <lotId>L1</lotId>
+      <policyNumber>POL-100</policyNumber>
+      <beneficiaryName>דנה ישראלי</beneficiaryName>
+      <relation>SPOUSE</relation>
+      <sharePercent>60.000</sharePercent>
+    </Record>
+    <Record>
+      <lotId>L1</lotId>
+      <policyNumber>POL-100</policyNumber>
+      <beneficiaryName>נועם ישראלי</beneficiaryName>
+      <relation>CHILD</relation>
+      <sharePercent>40.000</sharePercent>
+    </Record>
+  </Block>
+
+  <Block code="090">
+    <Record>
+      <lotId>L1</lotId>
+      <policyNumber>POL-100</policyNumber>
+      <movementType>WD</movementType>
+      <movementDate>20231115</movementDate>
+      <gross>10000.00</gross>
+      <net>8500.00</net>
+      <tax>1500.00</tax>
+    </Record>
+  </Block>
+
+  <Block code="999">
+    <Record>
+      <recordCount>10</recordCount>
+      <checksum>OK</checksum>
+    </Record>
+  </Block>
+</MevneAhid>

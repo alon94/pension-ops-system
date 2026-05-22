@@ -1,0 +1,103 @@
+# docker-compose.yml — stack מלא לסביבת test:
+#   - postgres 15  (mount של volume לשמירה בין הפעלות)
+#   - api          (NestJS על פורט 3000; entrypoint מריץ bootstrap)
+#   - web          (Next.js standalone על פורט 3001)
+#
+# הפעלה:
+#   cp .env.test .env
+#   docker compose up --build
+# בכניסה ראשונה: BOOTSTRAP_SEED=1 BOOTSTRAP_DEMO_USERS=1 תוודאו נתוני דמו.
+# העלאה לפרודקשן: BOOTSTRAP_SEED=0 BOOTSTRAP_DEMO_USERS=0 (יוצרים משתמשים ידנית).
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: pension-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-pension_ops}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      # נחשף ל-host רק בסביבת test/dev. בפרודקשן: להסיר!
+      - "${POSTGRES_PORT:-55432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-pension_ops}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks: [pension-net]
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pension-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-pension_ops}
+      VAULT_DIR: /vault
+      DEFAULT_PARSER_VERSION: ${DEFAULT_PARSER_VERSION:-2024.1}
+      JWT_SECRET: ${JWT_SECRET:?חובה לקבוע JWT_SECRET באורך 32+ תווים}
+      JWT_EXPIRY: ${JWT_EXPIRY:-12h}
+      # קליטה אוטומטית מתיקייה משותפת (אופציונלי — אפס FILE_WATCH_INBOX_DIR לכבות)
+      FILE_WATCH_INBOX_DIR: ${FILE_WATCH_INBOX_DIR:-/inbox}
+      FILE_WATCH_ARCHIVE_DIR: ${FILE_WATCH_ARCHIVE_DIR:-/inbox-done}
+      FILE_WATCH_INTERVAL_SEC: ${FILE_WATCH_INTERVAL_SEC:-5}
+      # bootstrap flags — בכניסה ראשונה ל-test
+      BOOTSTRAP_SEED: ${BOOTSTRAP_SEED:-0}
+      BOOTSTRAP_DEMO_USERS: ${BOOTSTRAP_DEMO_USERS:-0}
+      BOOTSTRAP_WAIT_SEC: ${BOOTSTRAP_WAIT_SEC:-60}
+      # LLM (אופציונלי — בלעדיהם A1/AGENT_CONTEXT/A8 רצים על fallback דטרמיניסטי)
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      LLM_MODEL: ${LLM_MODEL:-claude-opus-4-7}
+      VOYAGE_API_KEY: ${VOYAGE_API_KEY:-}
+      VOYAGE_MODEL: ${VOYAGE_MODEL:-voyage-3}
+    volumes:
+      - vault:/vault
+      - inbox:/inbox
+      - inbox-done:/inbox-done
+    ports:
+      - "${API_PORT:-3000}:3000"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--spider", "http://localhost:3000/health/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks: [pension-net]
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: pension-web
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      # API_BASE — Next משתמש בו ב-rewrites כדי לנתב /api/* ל-NestJS פנימית
+      API_BASE: http://api:3000
+    ports:
+      - "${WEB_PORT:-3001}:3001"
+    networks: [pension-net]
+
+volumes:
+  postgres-data:
+  vault:
+  inbox:
+  inbox-done:
+
+networks:
+  pension-net:
+    driver: bridge

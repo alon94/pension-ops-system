@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #fafafa;
+  --bg-tinted: #f4f4f5;
+  --card: #ffffff;
+  --text: #18181b;
+  --text-muted: #71717a;
+  --border: #e4e4e7;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  /* רנדור עברית טוב יותר */
+  font-feature-settings: 'kern' 1, 'liga' 1;
+}
+
+/* selection בצבע המותג */
+::selection { background-color: rgb(187 207 254 / 0.6); color: #1f2c87; }
+
+/* scrollbars מעודנים — Webkit בלבד; Firefox מקבל ב-utility */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #e4e4e7; border-radius: 6px; border: 2px solid transparent; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background: #d4d4d8; background-clip: padding-box; border: 2px solid transparent; }
+
+@layer components {
+  /* ---------- Surfaces ---------- */
+  .card {
+    @apply bg-white rounded-xl shadow-soft ring-1 ring-ink-200/60;
+  }
+  .card-hover {
+    @apply transition-all duration-150 hover:shadow-soft-md hover:ring-ink-300/60;
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn { @apply inline-flex items-center justify-center gap-1.5 rounded-lg px-3.5 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed; }
+  .btn-primary { @apply btn bg-brand-700 text-white hover:bg-brand-800 active:bg-brand-900; }
+  .btn-secondary { @apply btn bg-white text-ink-800 ring-1 ring-ink-200 hover:bg-ink-50 hover:ring-ink-300; }
+  .btn-ghost { @apply btn bg-transparent text-ink-600 hover:bg-ink-100 hover:text-ink-900; }
+  .btn-danger { @apply btn bg-danger-600 text-white hover:bg-danger-700; }
+  .btn-sm { @apply px-2.5 py-1 text-xs gap-1; }
+
+  /* ---------- Badges ---------- */
+  .badge {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium ring-1 ring-inset;
+  }
+  .badge-dot::before {
+    content: '';
+    @apply inline-block h-1.5 w-1.5 rounded-full bg-current;
+  }
+
+  /* Severity */
+  .sev-CRITICAL { @apply bg-danger-50 text-danger-700 ring-danger-100; }
+  .sev-HIGH     { @apply bg-orange-50 text-orange-700 ring-orange-100; }
+  .sev-MEDIUM   { @apply bg-warning-50 text-warning-700 ring-warning-100; }
+  .sev-LOW      { @apply bg-ink-100 text-ink-700 ring-ink-200; }
+
+  /* Status — מעגל סמנטי */
+  .status-OPEN                 { @apply bg-info-50 text-info-700 ring-info-100; }
+  .status-IN_PROGRESS          { @apply bg-indigo-50 text-indigo-700 ring-indigo-100; }
+  .status-WAITING_MANUFACTURER { @apply bg-warning-50 text-warning-700 ring-warning-100; }
+  .status-WAITING_CUSTOMER     { @apply bg-warning-50 text-warning-700 ring-warning-100; }
+  .status-ESCALATED            { @apply bg-danger-50 text-danger-700 ring-danger-100; }
+  .status-RESOLVED             { @apply bg-success-50 text-success-700 ring-success-100; }
+  .status-DISMISSED            { @apply bg-ink-100 text-ink-600 ring-ink-200; }
+
+  /* ---------- Tables ---------- */
+  .table { @apply w-full text-sm; }
+  .table thead { @apply bg-ink-50/60; }
+  .table thead th { @apply text-right p-3 text-xs font-medium text-ink-500 uppercase tracking-wide; }
+  .table tbody tr { @apply border-t border-ink-100 hover:bg-ink-50/50 transition-colors; }
+  .table tbody td { @apply p-3 align-middle; }
+
+  /* ---------- Inputs ---------- */
+  .input { @apply w-full bg-white border border-ink-200 rounded-lg px-3 py-2 text-sm placeholder-ink-400 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-brand-400 transition-shadow; }
+  .label-text { @apply text-xs font-medium text-ink-600 mb-1.5 block; }
+
+  /* ---------- Pages ---------- */
+  .page-title { @apply text-2xl font-bold text-ink-900 tracking-tight; }
+  .section-title { @apply text-lg font-semibold text-ink-900 tracking-tight; }
+  .muted { @apply text-ink-500; }
+
+  /* ---------- Nav links ---------- */
+  .nav-link { @apply relative px-2 py-1.5 rounded-md text-sm text-ink-600 hover:text-ink-900 hover:bg-ink-100 transition-colors; }
+  .nav-link-active { @apply text-brand-700 bg-brand-50 hover:bg-brand-100 hover:text-brand-800; }
+}
+
+@layer utilities {
+  /* Firefox scrollbar */
+  .scroll-thin { scrollbar-width: thin; scrollbar-color: #d4d4d8 transparent; }
+}
