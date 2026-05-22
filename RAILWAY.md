@@ -2,6 +2,10 @@
 
 מדריך מהיר ל-deploy ראשון של ה-stack ב-Railway. אורך משוער: ~30 דקות.
 
+> **Hybrid mode (מומלץ):** אם אתם רוצים את ה-UI ב-Vercel ורק את ה-API+DB
+> ב-Railway — **דלגו על שלב 5 ("יצירת ה-Web service")**. אחרי שתסיימו פה,
+> ראו [VERCEL.md](./VERCEL.md) להמשך.
+
 ## למה Railway?
 
 - Docker-aware (משתמש ב-`Dockerfile` ו-`web/Dockerfile` ישירות)
