@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.7
 
 # ============================================================================
-# שלב 1 — bundle עם dev deps + build של NestJS
+# שלב 1 — bundle עם dev deps + build של NestJS + קומפילציה של bootstrap
 # ============================================================================
 FROM node:20-alpine AS builder
 
@@ -17,12 +17,19 @@ COPY src ./src
 COPY scripts ./scripts
 COPY test ./test
 
-# build של dist/
+# build של NestJS ל-dist/
 RUN npm run build
 
-# קומפילציה של bootstrap-db.ts ל-JS (נקרא ב-entrypoint לפני start:prod)
-RUN npx tsc --project tsconfig.json --outDir dist --rootDir . scripts/bootstrap-db.ts || true
-# fallback אם הקומפילציה הגלובלית לא תופסת — נשתמש ב-ts-node ב-runtime
+# קומפילציה עצמאית של bootstrap-db.ts ל-JS — flags מפורשים שעוקפים את ה-tsconfig
+# של הפרויקט (שעלול לכלול אופציות שגרסת TypeScript ב-runtime לא מכירה).
+RUN npx --package=typescript -- tsc \
+    --module commonjs \
+    --target es2022 \
+    --esModuleInterop \
+    --skipLibCheck \
+    --resolveJsonModule \
+    --outDir /app/scripts-dist \
+    scripts/bootstrap-db.ts
 
 # ============================================================================
 # שלב 2 — runtime image דק
@@ -39,13 +46,11 @@ ENV NODE_ENV=production
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 
-# dist + סכמות + entrypoint
+# dist (NestJS) + bootstrap מקומפל + סכמות + entrypoint
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/scripts-dist/bootstrap-db.js ./scripts/bootstrap-db.js
 COPY src/persistence/*.sql ./sql/
 COPY scripts/seed.sql ./sql/seed.sql
-COPY scripts/bootstrap-db.ts ./scripts/bootstrap-db.ts
-# ts-node ל-runtime bootstrap (כי tsc הראשי לא תמיד מקמפל קבצי scripts)
-RUN npm install --no-save ts-node typescript
 
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh

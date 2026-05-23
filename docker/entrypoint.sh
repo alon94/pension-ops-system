@@ -3,7 +3,8 @@
 #
 # שלבים:
 #   1. בודק DATABASE_URL
-#   2. מריץ bootstrap-db (sql + seed אופציונלי + demo users אופציונלי) דרך ts-node
+#   2. מריץ bootstrap-db (sql + seed אופציונלי + demo users אופציונלי)
+#      מקובץ JS מקומפל-מראש — אין תלות ב-ts-node ב-runtime.
 #      (CMD ENTRYPOINT_SKIP_BOOTSTRAP=1 לדלג, למשל אם רוצים להריץ מיגרציה ידנית)
 #   3. exec לפקודת הראש (start:prod כברירת מחדל)
 
@@ -18,8 +19,7 @@ if [[ "${ENTRYPOINT_SKIP_BOOTSTRAP:-0}" == "1" ]]; then
   echo "[entrypoint] ENTRYPOINT_SKIP_BOOTSTRAP=1 — מדלג על bootstrap"
 else
   echo "[entrypoint] running db bootstrap..."
-  # ts-node מקבל את הקוד המקור — לא תלוי בהצלחת tsc על scripts/
-  npx ts-node --transpile-only /app/scripts/bootstrap-db.ts
+  node /app/scripts/bootstrap-db.js
   echo "[entrypoint] bootstrap done"
 fi
 
